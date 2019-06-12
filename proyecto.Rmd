@@ -6,11 +6,19 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-library(caret)
-library(klaR)
+#install.packages("corrplot")
+#install.packages("fpc")
+#install.packages("cluster")
+#install.packages("factoextra")
+#install.packages("data.table")
+#install.packages("reshape2")
 library(ggplot2)
-library(class)
-library(dplyr)
+library(caret)
+library(corrplot)
+library(fpc)
+library(cluster)
+library(factoextra)
+library(data.table)
 ```
 
 ## R Markdown
@@ -19,8 +27,13 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
+```{r cargando}
+setwd("D:/Usuarios/1053830331/Downloads")
+clientes<-read.csv("PF-02-DatosTelco.csv",sep=",")
+head(clientes)
+str(clientes)
+table(clientes$ESTADO)
+
 ```
 
 ## Including Plots
