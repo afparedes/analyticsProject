@@ -19,22 +19,77 @@ library(fpc)
 library(cluster)
 library(factoextra)
 library(data.table)
+library(dplyr)
 ```
 
-## R Markdown
+## Proyecto para javier
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+este es el primer proyecto 
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cargando}
+Parte 1.
+Cree un modelo predictivo de deserción que permita identificar los clientes propensos a irse a las empresas en directa competencia con la suya en el próximo año.
+1. ¿Encuentra alguna anomalía en los datos? (0.3)
+2. La empresa considera que los valores de variables que estén a más de 4 desviaciones estándar del promedio deberían ser consideradas excepcionales, y por lo tanto no se deben considerar en los análisis. Identifíquelas y apártelas del dataset (0.3)
+3. Analice la correlación entre las variables y explique lo que puede implicar desde el punto de vista de PCA. (0.2)
+4. Debe entrenar 3 tipos de modelos predictivos de diferentes familias:
+a. Defina el protocolo de evaluación que va a utilizar para calibrar los modelos y estimar la calidad del modelo final. (0.3)
+b. Establezca las métricas que va a utilizar, justificando su escogencia (0.2)
+c. Calibre 3 tipos de modelos diferentes: K-NN, árbol de decisión y algún otro que propongan, utilizando las métricas y protocolo definido (1.0)
+d. Evalúe los 3 modelos encontrados, escoja el mejor, explicando y concluyendo lo que encontró, utilizando las métricas y protocolo definido (0.5)
+
+Parte 2.
+Analice los clientes que se han ido, creando un modelo de segmentación de los clientes que desertan la compañía, teniendo en cuenta sus datos socio-demográficos y comportamientos de consumo del servicio de telefonía. Interpretar el perfil de clientes asignado a cada segmento, caracterizándolos de tal manera que le permita sugerir 3 a 5 campañas de fidelización.
+2. Extraiga los componentes principales, analice sus niveles de varianza explicada, e interprete
+los 3 más importantes en función de las variables originales. (0.6)
+3. Compare de los clusters obtenidos utilizando K-Means y Clustering jerárquico,
+seleccionando los resultados de uno de los dos métodos. Justifique. (0.4)
+4. Caracterice los clusters, etiquetando el segmento; proponga una estrategia de fidelización
+para cada uno de los clusters. Justifique (0.6)
+1. Definición del número de campañas a realizar (0.6)
+
+```{r cargando y p1.1}
 setwd("D:/Usuarios/1053830331/Downloads")
 clientes<-read.csv("PF-02-DatosTelco.csv",sep=",")
 head(clientes)
 str(clientes)
 table(clientes$ESTADO)
+summary(clientes)
+#clientes[2454,]
+#clientes[clientes$DURACION==0,]
+#clientes[clientes$SOBRECARGO==0,]
+clientes  %>%  filter(DURACION  == 0) %>%  filter(SOBRECARGO  > 0) %>%  filter(SALDO_RESTANTE  > 0)
+clientes  %>%  filter(DURACION  == 0) %>%  filter(SOBRECARGO  ==0) %>%  filter(SALDO_RESTANTE  > 0)%>% arrange(desc(MESES))
+clientes  %>%  filter(PRECIO_DISPOSITIVO>=INGRESOS)  %>% arrange(desc(PRECIO_DISPOSITIVO))
 
 ```
+1. ¿Encuentra alguna anomalía en los datos?
+podemos ver que hay clientes con duración promedio de llamada igual a cero saldo restante grande y aun así tienen sobre cargo, en teoría si no haces llamadas no deberían cobrarte sobrecargo, tambien hay un sujeto agradable que ha pasado 65 meses sin usar la linea y por alguna razón que escapa a nuestro limitado BI sigue vinculado.
+
+```{r limpiado y p1.2}
+indicesAQuitarNuevos <- order(-compras$Fresh)[1:5]
+indicesAQuitar <- NULL 
+indicesAQuitar <- union(indicesAQuitar, indicesAQuitarNuevos)
+
+indicesAQuitarNuevos <- order(-compras$Milk)[1:5]
+indicesAQuitar <- union(indicesAQuitar, indicesAQuitarNuevos)
+
+indicesAQuitarNuevos <- order(-compras$Grocery)[1:5]
+indicesAQuitar <- union(indicesAQuitar, indicesAQuitarNuevos)
+
+indicesAQuitarNuevos <- order(-compras$Frozen)[1:5]
+indicesAQuitar <- union(indicesAQuitar, indicesAQuitarNuevos)
+
+indicesAQuitarNuevos <- order(-compras$Detergents_Paper)[1:5]
+indicesAQuitar <- union(indicesAQuitar, indicesAQuitarNuevos)
+
+indicesAQuitarNuevos <- order(-compras$Delicassen)[1:5]
+indicesAQuitar <- union(indicesAQuitar, indicesAQuitarNuevos)
+
+compras_std = compras[-indicesAQuitar,]
+
+```
+
 
 ## Including Plots
 
